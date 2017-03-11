@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Cricket Records</string>
+    <string name="sort">SORT</string>
+    <string name="total_score">Total Score</string>
+    <string name="matches_played">Matches Played</string>
+
+    <string name="font_family_open_sans_semi_bold">OpenSansSemiBold</string>
+    <string name="font_family_open_sans_semi_bold_italic">OpenSansSemiBoldItalic</string>
+
+</resources>
