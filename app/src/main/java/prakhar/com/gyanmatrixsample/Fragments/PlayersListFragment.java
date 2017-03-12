@@ -119,7 +119,7 @@ public class PlayersListFragment extends Fragment {
                 public void onResponse(Call<CricketRecordModel> call, Response<CricketRecordModel> response) {
                     mRecordList = new ArrayList<CricketRecordModel.Record>();
                     mRecordList = (ArrayList<CricketRecordModel.Record>) response.body().getRecords();
-                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Cricket Records (" + mRecordList.size() + ")");
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Records (Batsman : " + mRecordList.size() + ")");
                     if (mRecordList.size() > 0) {
                         mPlayersRecordListAdapter.addData(mRecordList);
                         if (db.getContactsCount() == 0)
