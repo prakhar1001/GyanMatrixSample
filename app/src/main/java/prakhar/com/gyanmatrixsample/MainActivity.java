@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 
+import prakhar.com.gyanmatrixsample.Database.DatabaseHandler;
 import prakhar.com.gyanmatrixsample.Fragments.PlayersListFragment;
 import prakhar.com.gyanmatrixsample.Model.CricketRecordModel;
 
@@ -20,12 +23,14 @@ public class MainActivity extends AppCompatActivity {
     MaterialSearchView mSearchView;
     Toolbar mToolbar;
     PlayersListFragment playersListFragment;
-
+    DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = new DatabaseHandler(this);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
@@ -36,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //Do some magic
-                searchQueryFromDB(query);
+                if (query.length() > 0)
+                    searchQueryFromDB(query);
+                else
+                    Toast.makeText(MainActivity.this, "Empty Search String", Toast.LENGTH_LONG).show();
                 return false;
             }
 
@@ -44,18 +52,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 //Do some magic
+                if (newText.length() != 0) {
+                    if (newText.length() > 0)
+                        searchQueryFromDB(newText);
+                    else
+                        Toast.makeText(MainActivity.this, "Empty Search String", Toast.LENGTH_LONG).show();
+                }
                 return false;
             }
         });
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null)
+
+        {
             playersListFragment = new PlayersListFragment();
             FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
             if (playersListFragment != null) {
                 ft.replace(R.id.frame_layout, playersListFragment);
                 ft.commit();
             }
-        } else {
+        } else
+
+        {
+            //send a variable to a fragment which can abduct api call
             FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
             playersListFragment = (PlayersListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "playerListFragment");
             if (playersListFragment != null) {
@@ -67,7 +86,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void searchQueryFromDB(String query) {
-
+        ArrayList<CricketRecordModel.Record> PlayerQuery = db.getAllContactsWithName(query);
+        Log.d("size", String.valueOf(PlayerQuery.size()));
+        if (PlayerQuery.size() > 0) {
+            playersListFragment.setmRecordList(PlayerQuery);
+        }
     }
 
     @Override
@@ -79,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
-
 
 
     public void onSaveInstanceState(Bundle outState) {

@@ -24,3 +24,30 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -dontwarn com.squareup.okhttp.**
+-keepattributes SourceFile,LineNumberTable
+-keep class com.parse.*{ *; }
+-dontwarn com.parse.**
+-dontwarn com.squareup.picasso.**
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+-dontwarn okio.**
+-dontwarn retrofit2.Platform$Java8
+
+-dontwarn
+-injars bin/classes
+-injars libs
+-outjars bin/classes-processed.jar
+
+-optimizationpasses 5
+-dontskipnonpubliclibraryclasses
+-dontskipnonpubliclibraryclassmembers
+-dump class_files.txt
+-printseeds seeds.txt
+-printusage unused.txt
+-printmapping mapping.txt
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+-allowaccessmodification
+-repackageclasses ''
+
+-keepattributes Signature

@@ -77,7 +77,7 @@ public class CricketRecordModel implements Parcelable {
     }
 
 
-    public class Record implements Parcelable {
+    public static class Record implements Parcelable {
 
         @SerializedName("id")
         @Expose
@@ -101,14 +101,16 @@ public class CricketRecordModel implements Parcelable {
         @Expose
         private String country;
 
-        protected Record(Parcel in) {
-            id = in.readString();
-            name = in.readString();
-            image = in.readString();
-            totalScore = in.readString();
-            description = in.readString();
-            matchesPlayed = in.readString();
-            country = in.readString();
+        public Record(Parcel in) {
+            if (in != null) {
+                id = in.readString();
+                name = in.readString();
+                image = in.readString();
+                totalScore = in.readString();
+                description = in.readString();
+                matchesPlayed = in.readString();
+                country = in.readString();
+            }
         }
 
         public final Creator<Record> CREATOR = new Creator<Record>() {

@@ -25,6 +25,7 @@ import java.util.Map;
 import prakhar.com.gyanmatrixsample.Adapter.PlayersRecordListAdapter;
 import prakhar.com.gyanmatrixsample.ApiController.APIInterface;
 import prakhar.com.gyanmatrixsample.ApiController.RetroClient;
+import prakhar.com.gyanmatrixsample.Database.DatabaseHandler;
 import prakhar.com.gyanmatrixsample.Model.CricketRecordModel;
 import prakhar.com.gyanmatrixsample.R;
 import prakhar.com.gyanmatrixsample.Utils.AppStatus;
@@ -41,11 +42,9 @@ public class PlayersListFragment extends Fragment {
     ListView mPlayerListView;
     private ProgressDialog mProgressDialog;
     Map<String, String> mQueryMap;
-
-
     ArrayList<CricketRecordModel.Record> mRecordList = null;
     PlayersRecordListAdapter mPlayersRecordListAdapter;
-
+    DatabaseHandler db;
 
     public void setmRecordList(ArrayList<CricketRecordModel.Record> mRecordList) {
         this.mRecordList = mRecordList;
@@ -69,6 +68,7 @@ public class PlayersListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.playerslistfragment, container, false);
 
+        db = new DatabaseHandler(getActivity());
 
         mProgressDialog = displayProgressDialog(getActivity());
         mPlayerListView = (ListView) view.findViewById(R.id.players_listview);
@@ -117,15 +117,22 @@ public class PlayersListFragment extends Fragment {
             CricketRecordCall.enqueue(new Callback<CricketRecordModel>() {
                 @Override
                 public void onResponse(Call<CricketRecordModel> call, Response<CricketRecordModel> response) {
-                    dismissProgress();
                     mRecordList = new ArrayList<CricketRecordModel.Record>();
                     mRecordList = (ArrayList<CricketRecordModel.Record>) response.body().getRecords();
                     ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Cricket Records (" + mRecordList.size() + ")");
                     if (mRecordList.size() > 0) {
                         mPlayersRecordListAdapter.addData(mRecordList);
-                        saveArrayListToSQLiteDB(mRecordList);
-                    } else
+                        if (db.getContactsCount() == 0)
+                            insertInToSQLiteDB(mRecordList);
+                        else if (db.getContactsCount() > 0) {
+                            db.deleteContact();
+                            insertInToSQLiteDB(mRecordList);
+                        }
+                        dismissProgress();
+                    } else {
+                        dismissProgress();
                         Toast.makeText(getActivity(), "No Cricket Record Found", Toast.LENGTH_LONG).show();
+                    }
                 }
 
 
@@ -148,10 +155,13 @@ public class PlayersListFragment extends Fragment {
         }
     }
 
+
     //TODO
-    private void saveArrayListToSQLiteDB(ArrayList<CricketRecordModel.Record> mRecordList) {
-
-
+    private void insertInToSQLiteDB(ArrayList<CricketRecordModel.Record> mRecordList) {
+        for (int i = 0; i < mRecordList.size(); i++) {
+            db.addContact(mRecordList.get(i));
+        }
+        Toast.makeText(getActivity(), "Saved List into DB Successfully", Toast.LENGTH_LONG).show();
     }
 
     //sort
