@@ -10,7 +10,10 @@ import android.view.MenuItem;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.util.ArrayList;
+
 import prakhar.com.gyanmatrixsample.Fragments.PlayersListFragment;
+import prakhar.com.gyanmatrixsample.Model.CricketRecordModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void searchQueryFromDB(String query) {
 
     }
@@ -79,10 +81,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        System.out.println("TAG, onSavedInstanceState");
+
         if (getSupportFragmentManager().getFragments().contains(playersListFragment))
             getSupportFragmentManager().putFragment(outState, "playerListFragment", playersListFragment);
+
+        outState.putParcelableArrayList("ParceableRecordList", playersListFragment.getmRecordList());
+    }
+
+    protected void onRestoreInstanceState(Bundle savedState) {
+        System.out.println("TAG, onRestoreInstanceState");
+        ArrayList<CricketRecordModel.Record> mRepoArrayList = savedState.getParcelableArrayList("ParceableRecordList");
+        if (mRepoArrayList != null && playersListFragment != null) {
+            playersListFragment.setmRecordList(mRepoArrayList);
+        }
     }
 
 

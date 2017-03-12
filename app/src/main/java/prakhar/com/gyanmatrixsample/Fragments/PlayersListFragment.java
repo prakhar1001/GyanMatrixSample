@@ -41,8 +41,20 @@ public class PlayersListFragment extends Fragment {
     ListView mPlayerListView;
     private ProgressDialog mProgressDialog;
     Map<String, String> mQueryMap;
+
+
     ArrayList<CricketRecordModel.Record> mRecordList = null;
     PlayersRecordListAdapter mPlayersRecordListAdapter;
+
+
+    public void setmRecordList(ArrayList<CricketRecordModel.Record> mRecordList) {
+        this.mRecordList = mRecordList;
+        mPlayersRecordListAdapter.addData(this.mRecordList);
+    }
+
+    public ArrayList<CricketRecordModel.Record> getmRecordList() {
+        return mRecordList;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -139,6 +151,7 @@ public class PlayersListFragment extends Fragment {
     //TODO
     private void saveArrayListToSQLiteDB(ArrayList<CricketRecordModel.Record> mRecordList) {
 
+
     }
 
     //sort
@@ -186,9 +199,6 @@ public class PlayersListFragment extends Fragment {
         return true;
     }
 
-    public ArrayList<CricketRecordModel.Record> getmRecordList() {
-        return mRecordList;
-    }
 
     @Override
     public void onResume() {
@@ -235,6 +245,5 @@ public class PlayersListFragment extends Fragment {
             mProgressDialog.dismiss();
         }
     }
-
 
 }
