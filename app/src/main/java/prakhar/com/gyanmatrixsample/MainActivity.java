@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 ft.replace(R.id.frame_layout, playersListFragment);
                 ft.commit();
             }
-        }/* else
+        } else
 
         {
             //send a variable to a fragment which can abduct api call
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 ft.replace(R.id.frame_layout, playersListFragment);
                 ft.commit();
             }
-        }*/
+        }
     }
 
 
