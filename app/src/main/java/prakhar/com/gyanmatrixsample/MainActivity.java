@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar mToolbar;
     PlayersListFragment playersListFragment;
     DatabaseHandler db;
+    boolean searchstatus = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +42,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //Do some magic
-                if (query.length() > 0)
+                if (query.length() > 0) {
                     searchQueryFromDB(query);
-                else
+                    searchstatus = true;
+                } else
                     Toast.makeText(MainActivity.this, "Empty Search String", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -53,9 +55,10 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 //Do some magic
                 if (newText.length() != 0) {
-                    if (newText.length() > 0)
+                    if (newText.length() > 0) {
                         searchQueryFromDB(newText);
-                    else
+                        searchstatus = true;
+                    } else
                         Toast.makeText(MainActivity.this, "Empty Search String", Toast.LENGTH_LONG).show();
                 }
                 return false;
@@ -71,15 +74,33 @@ public class MainActivity extends AppCompatActivity {
                 ft.replace(R.id.frame_layout, playersListFragment);
                 ft.commit();
             }
-        } else
-
-        {
+        } else {
             //send a variable to a fragment which can abduct api call
             FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
             playersListFragment = (PlayersListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "playerListFragment");
             if (playersListFragment != null) {
                 ft.replace(R.id.frame_layout, playersListFragment);
                 ft.commit();
+            }
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (mSearchView.isSearchOpen()) {
+            mSearchView.closeSearch();
+        } else if (!mSearchView.isSearchOpen()) {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0)
+                getSupportFragmentManager().popBackStack();
+            super.onBackPressed();
+        }
+        if (searchstatus == true) {
+            searchstatus = false;
+            ArrayList<CricketRecordModel.Record> PlayerQuery = db.getAllContacts();
+            Log.d("size", String.valueOf(PlayerQuery.size()));
+            if (PlayerQuery.size() > 0) {
+                playersListFragment.setmRecordList(PlayerQuery);
             }
         }
     }

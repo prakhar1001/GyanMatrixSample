@@ -76,6 +76,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(TABLE_PLAYERS, null, values);
         db.close(); // Closing database connection
     }
+    // Getting All Contacts
+    public ArrayList<CricketRecordModel.Record> getAllContacts() {
+        ArrayList<CricketRecordModel.Record> contactList = new ArrayList<CricketRecordModel.Record>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_PLAYERS ;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                CricketRecordModel.Record record = new CricketRecordModel.Record(null);
+
+                record.setId(cursor.getString(0));
+                record.setName(cursor.getString(1));
+                record.setImage(cursor.getString(2));
+                record.setTotalScore(cursor.getString(3));
+                record.setMatchesPlayed(cursor.getString(4));
+                record.setCountry(cursor.getString(5));
+                record.setDescription(cursor.getString(6));
+                // Adding contact to list
+                contactList.add(record);
+            } while (cursor.moveToNext());
+        }
+
+        // return contact list
+        return contactList;
+    }
 
 
     // Getting All Contacts
